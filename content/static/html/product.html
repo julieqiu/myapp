@@ -1,0 +1,68 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="/static/css/stylesheet.css">
+</head>
+
+<body>
+  <div class="categories">
+    {{range .Categories}}
+      <a href="/{{.}}">{{.}}</a>
+    {{end}}
+  </div>
+  <div class="product-cart" >
+    <a href="https://www.baldorfood.com/cart" target="_blank">View Cart</a>
+  </div>
+  <div>{{len .Items}} products</div>
+  <div class="container">
+    {{range .Items}}
+      <div class="product">
+        <img src="{{.Img}}">
+        <div>
+          <div class="product-brand">{{.Brand}}</div>
+          <div class="product-title">{{.Title}}</div>
+          <div class="product-price">{{.Price}}</div>
+          <div>
+            {{if .ProductKey}}
+              <button
+                data-key="{{.ProductKey}}"
+                data-unit="{{.Unit}}"
+                onclick="addToCart(this)"
+                class="product-add">Add to Cart</button>
+            {{else}}
+              <span>Unavailable</span>
+            {{end}}
+            <a class="product-link" href={{.Link}} target="_blank">LINK</a>
+          </div>
+          {{if .Label}}
+            <div class="product-label">{{.Label}}</div>
+          {{end}}
+         </div>
+      </div>
+    {{end}}
+  </div>
+</body>
+
+<script>
+function addToCart(product) {
+  product.innerHTML = "Adding...";
+
+   httpRequest = new XMLHttpRequest();
+
+   if (!httpRequest) {
+     alert('Giving up :( Cannot create an XMLHTTP instance');
+     return false;
+   }
+   httpRequest.onreadystatechange = function(){
+     if (httpRequest.readyState === XMLHttpRequest.DONE) {
+       if (httpRequest.status === 200) {
+         product.innerHTML = "Added!";
+       } else {
+         product.innerHTML = "Failed";
+         console.log('There was a problem with the request.');
+       }
+     }
+   };
+  debugger;
+  httpRequest.open('POST', "/add/"+product.dataset.key+"/"+product.dataset.unit);
+  httpRequest.send();
+}
+</script>

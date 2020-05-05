@@ -1,0 +1,70 @@
+body {
+    font-family: "Karla", sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.product {
+    width: 12rem;
+    height: 20rem;
+    padding: 2rem;
+    border: 1px solid #e4e4e4;
+    background: #ffffff;
+    margin: 1rem;
+}
+.product-brand {
+    font-size: 0.8rem;
+}
+
+.product-title {
+    font-weight: 600;
+    padding: 0.5rem 0;
+}
+.product-price {
+    padding-bottom: 0.5rem;
+}
+.product-label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    border: 1px solid #e4e4e4;
+    padding: 0.2rem;
+    margin-top: 0.5rem;
+
+    color: #fff;
+    background: #00573f;
+    border: 1px solid #00573f;
+}
+.product-add {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 2px solid #00573f;
+    padding: 0.2rem;
+    color: #00573f;
+}
+.product-link {
+    font-size: 0.75rem;
+    color: #00573f;
+}
+.product-cart {
+  margin: 1rem 0;
+}
+.product-cart a{
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 2px solid lightgray;
+  padding: 0.5rem;
+  color: #00573f;
+  text-decoration: none;
+}
+.categories a {
+  padding-right: 1rem;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.5rem;
+  color: #00573f;
+}

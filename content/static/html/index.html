@@ -1,0 +1,11 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="/static/css/stylesheet.css">
+</head>
+
+<body>
+  <div class="categories">
+    {{range .Categories}}
+      <div><a href="/{{.}}">{{.}}</a></div>
+    {{end}}
+  </div>
+</body>
