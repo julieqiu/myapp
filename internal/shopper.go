@@ -1,20 +1,13 @@
 package internal
 
 import (
-	"bufio"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"os"
 	"strings"
-)
-
-const (
-	BaldorHost   = "https://www.baldorfood.com"
-	URLNewLogin  = "https://www.baldorfood.com/users/default/new-login"
-	URLCart      = "https://baldorfood.com/cart"
-	URLAddToCart = "https://baldorfood.com/ecommerce/shoppingcart/cart.addToCart"
 )
 
 type Shopper struct {
@@ -34,27 +27,11 @@ func NewShopperWithCookies(cookies []*http.Cookie) (*Shopper, error) {
 	return &Shopper{http.Client{Jar: cookieJar}}, nil
 }
 
-func NewShopperWithAuthentication() (*Shopper, error) {
+func NewShopperWithAuthentication(email, pass string) (*Shopper, error) {
 	cookieJar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, err
 	}
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("Enter email: ")
-	email, err := reader.ReadString('\n')
-	if err != nil {
-		return nil, err
-	}
-	fmt.Printf("Enter password: ")
-	pass, err := reader.ReadString('\n')
-	if err != nil {
-		return nil, err
-	}
-	email = strings.TrimSuffix(email, "\n")
-	pass = strings.TrimSuffix(pass, "\n")
-
-	fmt.Printf("Getting cookies for baldorfood.com for: %q \n", email)
 	shopper := &Shopper{http.Client{Jar: cookieJar}}
 
 	if _, err := shopper.PostForm(URLNewLogin, url.Values{
@@ -71,14 +48,35 @@ func NewShopperWithAuthentication() (*Shopper, error) {
 	return shopper, nil
 }
 
-func (s *Shopper) AddToCart(productKey string) error {
-	if _, err := s.PostForm(URLAddToCart, url.Values{
+func (s *Shopper) AddToCart(productKey, unit string) error {
+	v := url.Values{
 		"ShoppingCartModel[key]":      {productKey},
+		"ShoppingCartModel[unit]":     {unit},
 		"ShoppingCartModel[quantity]": {"1"},
-		"ShoppingCartModel[unit]":     {"CTN"},
 		"qty":                         {"1"},
-	}); err != nil {
+	}
+	resp, err := s.PostForm(URLAddToCart, v)
+	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	if strings.Contains(string(b), "error") {
+		// The response always returns a status 200, even when there is an
+		// error.
+		return fmt.Errorf("Error adding to cart: %q; values = %v", string(b), v)
+	}
+	log.Printf("Success! %q\n", string(b))
 	return nil
+}
+
+func BaldorCookies(j http.CookieJar) ([]*http.Cookie, error) {
+	u, err := url.Parse(BaldorHost)
+	if err != nil {
+		return nil, err
+	}
+	return j.Cookies(u), nil
 }
