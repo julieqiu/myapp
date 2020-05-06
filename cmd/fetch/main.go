@@ -1,4 +1,4 @@
-// Command main recreates the data in the json directory.
+// Command fetch recreates the data in the products directory.
 package main
 
 import (
@@ -115,9 +115,9 @@ func findItemsAtURL(u string, cookies []*http.Cookie) error {
 }
 
 func writeItemsToFile(u string, items []*internal.Item) error {
-	filename := "json/" + strings.ReplaceAll(
+	filename := "data/" + strings.ReplaceAll(
 		strings.TrimSuffix(strings.TrimPrefix(u, "https://www.baldorfood.com/products"), "?viewall=1"),
-		"/", "_") + ".json"
+		"/", "_") + ".data"
 
 	jsonString, err := json.Marshal(items)
 	if err != nil {
