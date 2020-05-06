@@ -1,7 +1,13 @@
 package internal
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
+	"os"
+	"path"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -74,4 +80,38 @@ func (c *Colly) GetItemsOnPage(url string) []*Item {
 	})
 	c.colly.Visit(url)
 	return items
+}
+
+func LoadItems() (map[string][]*Item, error) {
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("No caller information")
+	}
+	dataDir := filepath.Join(path.Dir(path.Dir(filename)), "products")
+
+	var files []string
+	err := filepath.Walk(dataDir, func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			files = append(files, path)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	allItems := map[string][]*Item{}
+	for _, filename := range files {
+		file, err := ioutil.ReadFile(filename)
+		if err != nil {
+			return nil, err
+		}
+
+		var items []*Item
+		if err := json.Unmarshal([]byte(file), &items); err != nil {
+			return nil, err
+		}
+		category := strings.Split(filename, "_")[1]
+		allItems[category] = append(allItems[category], items...)
+	}
+	return allItems, nil
 }
