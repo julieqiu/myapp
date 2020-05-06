@@ -5,7 +5,7 @@ import (
 )
 
 func TestSearch(t *testing.T) {
-	searcher, err := NewSearcher(IndexDir())
+	searcher, err := NewSearcher()
 	if err != nil {
 		t.Fatal(err)
 	}
