@@ -2,7 +2,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/julieqiu/baldorfood/internal"
@@ -31,10 +30,4 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Printf("Items indexed: %d\n", count)
-	log.Printf("Searching for salmon...")
-	sr, err := searcher.Search("salmon")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(sr)
 }
