@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"os"
 	"strings"
+
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 type Shopper struct {
@@ -104,9 +106,9 @@ func ReadEmailAndPassword() (string, string, error) {
 		return "", "", err
 	}
 	fmt.Printf("Enter password: ")
-	pass, err := reader.ReadString('\n')
+	pass, err := terminal.ReadPassword(0)
 	if err != nil {
-		return "", "", err
+		log.Fatal(err)
 	}
-	return strings.TrimSuffix(email, "\n"), strings.TrimSuffix(pass, "\n"), nil
+	return strings.TrimSuffix(email, "\n"), strings.TrimSuffix(string(pass), "\n"), nil
 }

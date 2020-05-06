@@ -76,6 +76,8 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	log.Println()
+	log.Println("Authenticating... (this may take a minute or so)")
 	shopper, err := internal.NewShopperWithAuthentication(email, pass)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
