@@ -10,7 +10,12 @@
   </div>
   <div class="product-cart" >
     <a href="https://www.baldorfood.com/cart" target="_blank">View Cart</a>
+    <button onclick="login(this)" class="product-add">Login</button>
   </div>
+  <form class="product-search" action="/search" method="GET">
+    <input name="q"/>
+    <input type="submit" />
+  </form>
   <div>{{len .Items}} products</div>
   <div class="container">
     {{range .Items}}
@@ -45,24 +50,44 @@
 function addToCart(product) {
   product.innerHTML = "Adding...";
 
-   httpRequest = new XMLHttpRequest();
+  httpRequest = new XMLHttpRequest();
 
-   if (!httpRequest) {
-     alert('Giving up :( Cannot create an XMLHTTP instance');
-     return false;
-   }
-   httpRequest.onreadystatechange = function(){
-     if (httpRequest.readyState === XMLHttpRequest.DONE) {
-       if (httpRequest.status === 200) {
-         product.innerHTML = "Added!";
-       } else {
-         product.innerHTML = "Failed";
-         console.log('There was a problem with the request.');
-       }
-     }
-   };
-  debugger;
+  if (!httpRequest) {
+    alert('Giving up :( Cannot create an XMLHTTP instance');
+    return false;
+  }
+  httpRequest.onreadystatechange = function(){
+    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+      if (httpRequest.status === 200) {
+        product.innerHTML = "Added!";
+      } else {
+        product.innerHTML = "Failed";
+      }
+    }
+  };
   httpRequest.open('POST', "/add/"+product.dataset.key+"/"+product.dataset.unit);
+  httpRequest.send();
+}
+
+function login(button) {
+  button.innerHTML = "Logging in... (check your terminal)";
+
+  httpRequest = new XMLHttpRequest();
+
+  if (!httpRequest) {
+    alert('Giving up :( Cannot create an XMLHTTP instance');
+    return false;
+  }
+  httpRequest.onreadystatechange = function(){
+    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+      if (httpRequest.status === 200) {
+        button.innerHTML = "Logged In!";
+      } else {
+        button.innerHTML = "Failed";
+      }
+    }
+  };
+  httpRequest.open('POST', "/login");
   httpRequest.send();
 }
 </script>

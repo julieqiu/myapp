@@ -1,12 +1,14 @@
 package internal
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"os"
 	"strings"
 )
 
@@ -73,10 +75,38 @@ func (s *Shopper) AddToCart(productKey, unit string) error {
 	return nil
 }
 
-func BaldorCookies(j http.CookieJar) ([]*http.Cookie, error) {
+func BaldorCookie(j http.CookieJar) (*http.Cookie, error) {
 	u, err := url.Parse(BaldorHost)
 	if err != nil {
 		return nil, err
 	}
-	return j.Cookies(u), nil
+	cookie := &http.Cookie{}
+	for _, c := range j.Cookies(u) {
+		if c.Name == "provided_access" || c.Name == "PHPSESSID" {
+			continue
+		}
+		log.Printf("BALDORFOOD_COOKIE_NAME=%q\n", c.Name)
+		log.Printf("BALDORFOOD_COOKIE_VALUE=%q\n", c.Value)
+		cookie.Name = c.Name
+		cookie.Value = c.Value
+	}
+	if cookie.Name == "" {
+		return nil, fmt.Errorf("Authentication cookie not found")
+	}
+	return cookie, nil
+}
+
+func ReadEmailAndPassword() (string, string, error) {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Printf("Enter email: ")
+	email, err := reader.ReadString('\n')
+	if err != nil {
+		return "", "", err
+	}
+	fmt.Printf("Enter password: ")
+	pass, err := reader.ReadString('\n')
+	if err != nil {
+		return "", "", err
+	}
+	return strings.TrimSuffix(email, "\n"), strings.TrimSuffix(pass, "\n"), nil
 }

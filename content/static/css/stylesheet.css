@@ -60,6 +60,14 @@ body {
   color: #00573f;
   text-decoration: none;
 }
+.product-search form {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 2px solid lightgray;
+  padding: 0.5rem;
+  color: #00573f;
+}
 .categories a {
   padding-right: 1rem;
   text-transform: uppercase;

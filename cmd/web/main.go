@@ -40,6 +40,7 @@ func main() {
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("content/static"))))
 	http.HandleFunc("/add/", handleAddToCart)
+	http.HandleFunc("/login/", handleLogin)
 	http.HandleFunc("/search/", handleSearch(searcher, categories))
 	http.HandleFunc("/", handleViewProducts(categories, allItems))
 	log.Print("Listening on localhost:8080")
@@ -55,11 +56,38 @@ func handleAddToCart(w http.ResponseWriter, r *http.Request) {
 	s, err := internal.NewShopperWithCookies([]*http.Cookie{{Name: baldorCookieName, Value: baldorCookieValue}})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	if err := s.AddToCart(productKey, unit); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+}
+
+func handleLogin(w http.ResponseWriter, r *http.Request) {
+	if os.Getenv("BALDORFOOD_COOKIE_NAME") != "" &&
+		os.Getenv("BALDORFOOD_COOKIE_VALUE") != "" {
+		return
+	}
+
+	email, pass, err := internal.ReadEmailAndPassword()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	shopper, err := internal.NewShopperWithAuthentication(email, pass)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	cookie, err := internal.BaldorCookie(shopper.Jar)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	os.Setenv("BALDORFOOD_COOKIE_NAME", cookie.Name)
+	os.Setenv("BALDORFOOD_COOKIE_VALUE", cookie.Value)
 }
 
 func handleSearch(searcher *internal.Searcher, categories []string) http.HandlerFunc {

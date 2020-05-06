@@ -19,11 +19,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	cookies, err := internal.BaldorCookies(shopper.Jar)
+	cookie, err := internal.BaldorCookie(shopper.Jar)
 	if err != nil {
 		log.Fatal(err)
 	}
-	findItems(cookies)
+	findItems([]*http.Cookie{cookie})
 }
 
 func newShopper() (*internal.Shopper, error) {

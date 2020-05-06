@@ -14,11 +14,11 @@ func TestGetItemsOnPage(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	cookies, err := BaldorCookies(shopper.Jar)
+	cookie, err := BaldorCookie(shopper.Jar)
 	if err != nil {
 		t.Fatal(err)
 	}
-	c := NewColly(BaldorHost, cookies)
+	c := NewColly(BaldorHost, []*http.Cookie{cookie})
 	if !c.IsLoggedIn() {
 		t.Fatal("Not logged in.")
 	}
