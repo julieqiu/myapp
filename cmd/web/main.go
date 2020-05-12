@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/julieqiu/baldorfood/internal"
@@ -102,6 +103,7 @@ func handleSearch(searcher *internal.Searcher, categories []string) http.Handler
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+			sortItemsByPrice(items)
 			p.Items = items
 		}
 		t, err := template.ParseFiles("content/static/html/product.html")
@@ -123,6 +125,7 @@ func handleViewProducts(categories []string, allItems map[string][]*internal.Ite
 				http.Redirect(w, r, fmt.Sprintf("/search?q=%s", category), http.StatusFound)
 				return
 			}
+			sortItemsByPrice(items)
 			p.Items = items
 			tmpl = "product.html"
 		}
@@ -133,4 +136,18 @@ func handleViewProducts(categories []string, allItems map[string][]*internal.Ite
 		t.Execute(w, p)
 		return
 	}
+}
+
+func sortItemsByPrice(items []*internal.Item) {
+	price := func(s string) float64 {
+		s = strings.Split(strings.TrimPrefix(strings.Split(s, " ")[0], "$"), "/")[0]
+		f, err := strconv.ParseFloat(s, 64)
+		if err != nil {
+			log.Print(err)
+		}
+		return f
+	}
+	sort.Slice(items, func(i, j int) bool {
+		return price(items[i].Price) < price(items[j].Price)
+	})
 }
