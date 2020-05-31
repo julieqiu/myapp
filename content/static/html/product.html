@@ -60,8 +60,10 @@ function addToCart(product) {
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
       if (httpRequest.status === 200) {
         product.innerHTML = "Added!";
+      } else if (httpRequest.status === 401) {
+        login(product)
       } else {
-        product.innerHTML = "Failed";
+        product.innerHTML = "Failed" + "(" + httpRequest.status + ")";
       }
     }
   };

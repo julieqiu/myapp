@@ -37,7 +37,6 @@ func main() {
 	for c := range allItems {
 		categories = append(categories, c)
 	}
-	sort.Strings(categories)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("content/static"))))
 	http.HandleFunc("/add/", handleAddToCart)
@@ -54,14 +53,19 @@ func handleAddToCart(w http.ResponseWriter, r *http.Request) {
 	unit := parts[1]
 	baldorCookieName := os.Getenv("BALDORFOOD_COOKIE_NAME")
 	baldorCookieValue := os.Getenv("BALDORFOOD_COOKIE_VALUE")
+	if baldorCookieName == "" || baldorCookieValue == "" {
+		log.Println("Not logged in. Click the login button in the top left corner.")
+		http.Error(w, "Please login", http.StatusUnauthorized)
+		return
+	}
 	s, err := internal.NewShopperWithCookies([]*http.Cookie{{Name: baldorCookieName, Value: baldorCookieValue}})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if err := s.AddToCart(productKey, unit); err != nil {
+	if status, err := s.AddToCart(productKey, unit); err != nil {
 		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), status)
 		return
 	}
 }

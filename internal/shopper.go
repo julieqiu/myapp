@@ -52,7 +52,7 @@ func NewShopperWithAuthentication(email, pass string) (*Shopper, error) {
 	return shopper, nil
 }
 
-func (s *Shopper) AddToCart(productKey, unit string) error {
+func (s *Shopper) AddToCart(productKey, unit string) (int, error) {
 	v := url.Values{
 		"ShoppingCartModel[key]":      {productKey},
 		"ShoppingCartModel[unit]":     {unit},
@@ -61,20 +61,20 @@ func (s *Shopper) AddToCart(productKey, unit string) error {
 	}
 	resp, err := s.PostForm(URLAddToCart, v)
 	if err != nil {
-		return err
+		return resp.StatusCode, err
 	}
 	defer resp.Body.Close()
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return http.StatusInternalServerError, err
 	}
 	if strings.Contains(string(b), "error") {
 		// The response always returns a status 200, even when there is an
 		// error.
-		return fmt.Errorf("Error adding to cart: %q; values = %v", string(b), v)
+		return http.StatusInternalServerError, fmt.Errorf("Error adding to cart: %q; values = %v", string(b), v)
 	}
 	log.Printf("Success! %q\n", string(b))
-	return nil
+	return http.StatusOK, nil
 }
 
 func BaldorCookie(j http.CookieJar) (*http.Cookie, error) {
@@ -84,7 +84,7 @@ func BaldorCookie(j http.CookieJar) (*http.Cookie, error) {
 	}
 	cookie := &http.Cookie{}
 	for _, c := range j.Cookies(u) {
-		if c.Name == "provided_access" || c.Name == "PHPSESSID" {
+		if c.Name == "provided_access" || c.Name == "PHPSESSID" || c.Name == "SESSION" {
 			continue
 		}
 		log.Printf("BALDORFOOD_COOKIE_NAME=%q\n", c.Name)
