@@ -76,3 +76,15 @@ body {
   padding: 0.5rem;
   color: #00573f;
 }
+.index {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.index-searchInput{
+  width: 20rem;
+  height: 2rem;
+}
+.index {
+  margin-top: 10rem;
+}

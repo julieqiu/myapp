@@ -3,9 +3,17 @@
 </head>
 
 <body>
-  <div class="categories">
-    {{range .Categories}}
-      <div><a href="/{{.}}">{{.}}</a></div>
-    {{end}}
+  <div class="index">
+    <div class="index-search">
+      <form class="product-search" action="/search" method="GET">
+        <input class="index-searchInput" name="q" placeholder="What are you looking for today?"/>
+        <input type="submit" />
+      </form>
+    </div>
+    <div class="index-categories categories">
+      {{range .Categories}}
+        <div><a href="/{{.}}">{{.}}</a></div>
+      {{end}}
+    </div>
   </div>
 </body>
