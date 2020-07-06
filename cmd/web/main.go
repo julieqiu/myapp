@@ -144,6 +144,9 @@ func handleViewProducts(categories []string, allItems map[string][]*internal.Ite
 
 func sortItemsByPrice(items []*internal.Item) {
 	price := func(s string) float64 {
+		if s == "" {
+			return 0
+		}
 		s = strings.Split(strings.TrimPrefix(strings.Split(s, " ")[0], "$"), "/")[0]
 		f, err := strconv.ParseFloat(s, 64)
 		if err != nil {
