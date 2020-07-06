@@ -65,7 +65,7 @@ func (c *Colly) GetItemsOnPage(url string) []*Item {
 				Sku:        elem.ChildText(".product-sku-inline"),
 				Price:      elem.ChildText(".price"),
 				Unit:       unit,
-				Img:        c.Host + elem.ChildAttr("img", "src"),
+				Img:        elem.ChildAttr("img", "src"),
 				ProductKey: productKey,
 				Category:   category,
 			}
