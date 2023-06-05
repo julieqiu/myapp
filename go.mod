@@ -1,4 +1,4 @@
-module github.com/julieqiu/baldorfood
+module github.com/julieqiu/myapp
 
 go 1.20
 
