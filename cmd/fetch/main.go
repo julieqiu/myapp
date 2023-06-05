@@ -5,7 +5,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -85,7 +84,7 @@ func writeItemsToFile(u string, items []*internal.Item) error {
 	if err != nil {
 		return err
 	}
-	ioutil.WriteFile(filename, jsonString, os.ModePerm)
+	os.WriteFile(filename, jsonString, os.ModePerm)
 	fmt.Printf("Wrote %d items to %q\n", len(items), filename)
 	return nil
 }

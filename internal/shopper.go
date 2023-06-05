@@ -3,7 +3,7 @@ package internal
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/http/cookiejar"
@@ -64,7 +64,7 @@ func (s *Shopper) AddToCart(productKey, unit string) (int, error) {
 		return resp.StatusCode, err
 	}
 	defer resp.Body.Close()
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}

@@ -2,7 +2,6 @@ package internal
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -30,7 +29,7 @@ func LoadItems() (map[string][]*Item, error) {
 	}
 	allItems := map[string][]*Item{}
 	for _, filename := range files {
-		file, err := ioutil.ReadFile(filename)
+		file, err := os.ReadFile(filename)
 		if err != nil {
 			return nil, err
 		}
