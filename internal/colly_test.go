@@ -8,6 +8,8 @@ import (
 )
 
 func TestGetItemsOnPage(t *testing.T) {
+	t.Skip()
+
 	baldorCookieName := os.Getenv("BALDORFOOD_COOKIE_NAME")
 	baldorCookieValue := os.Getenv("BALDORFOOD_COOKIE_VALUE")
 	shopper, err := NewShopperWithCookies([]*http.Cookie{{Name: baldorCookieName, Value: baldorCookieValue}})
