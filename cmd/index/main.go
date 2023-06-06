@@ -4,7 +4,7 @@ package main
 import (
 	"log"
 
-	"github.com/julieqiu/baldorfood/internal"
+	"github.com/julieqiu/myapp/internal"
 )
 
 func main() {

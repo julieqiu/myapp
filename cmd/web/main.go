@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/julieqiu/baldorfood/internal"
+	"github.com/julieqiu/myapp/internal"
 )
 
 type Page struct {

@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/julieqiu/baldorfood/internal"
+	"github.com/julieqiu/myapp/internal"
 )
 
 func main() {
@@ -36,7 +36,7 @@ func newShopper() (*internal.Shopper, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("Getting cookies for baldorfood.com for: %q \n", email)
+	log.Printf("Getting cookies for myapp.com for: %q \n", email)
 	shopper, err := internal.NewShopperWithAuthentication(email, pass)
 	if err != nil {
 		return nil, err
@@ -77,7 +77,7 @@ func findItemsAtURL(u string, cookies []*http.Cookie) error {
 
 func writeItemsToFile(u string, items []*internal.Item) error {
 	filename := internal.ProductsDir() + "/" + strings.ReplaceAll(
-		strings.TrimSuffix(strings.TrimPrefix(u, "https://www.baldorfood.com/products"), "?viewall=1"),
+		strings.TrimSuffix(strings.TrimPrefix(u, "https://www.myapp.com/products"), "?viewall=1"),
 		"/", "_") + ".json"
 
 	jsonString, err := json.Marshal(items)

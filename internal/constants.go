@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	BaldorHost   = "https://www.baldorfood.com"
-	URLNewLogin  = "https://www.baldorfood.com/users/default/new-login"
-	URLCart      = "https://www.baldorfood.com/cart"
-	URLAddToCart = "https://www.baldorfood.com/ecommerce/shoppingcart/cart.addToCart"
+	BaldorHost   = "https://www.myapp.com"
+	URLNewLogin  = "https://www.myapp.com/users/default/new-login"
+	URLCart      = "https://www.myapp.com/cart"
+	URLAddToCart = "https://www.myapp.com/ecommerce/shoppingcart/cart.addToCart"
 )
 
 func LoadItems() (map[string][]*Item, error) {
